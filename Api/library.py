@@ -1,8 +1,13 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, fields, marshal_with, abort
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+#Solution to the cors error
+CORS(app)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 api = Api(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -20,7 +25,7 @@ class CommunityModel(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(100), nullable = False)
 
-create_db = False
+create_db = True
 if create_db:
     with app.app_context():
         db.create_all()
@@ -50,10 +55,12 @@ community_resource_fields = {
 }
 
 class User(Resource):
-    @marshal_with(user_resource_fields)
     def get(self, id):
-        result = UserModel.query.filter_by(id = id).first()
-        return result
+        results = UserModel.query.all()
+        return_dict = {}
+        for result in results:
+            return_dict[str(result.id)] = result.email
+        return return_dict
     
     @marshal_with(user_resource_fields)
     def put(self, id):
