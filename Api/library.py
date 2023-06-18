@@ -25,7 +25,7 @@ class CommunityModel(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(100), nullable = False)
 
-create_db = True
+create_db = False
 if create_db:
     with app.app_context():
         db.create_all()

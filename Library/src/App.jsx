@@ -8,6 +8,11 @@ import { useState, useEffect } from 'react'
 function App() {
   const [email , setEmail] = useState("")
   const [password , setPassword] = useState("")
+  const [can_submit, setCan_submit] = useState(false)
+
+  const email_regex = new RegExp(/^[a-z0-9A-Z]{2,}@..*\.com$/gm)
+  const password_regex = new RegExp(/\w/gm)
+
   function submit(e){
     e.preventDefault()
     console.log(email)
@@ -46,6 +51,19 @@ function App() {
     console.log(json_result2)
   }
 
+  if(email_regex.test(email) && password_regex.test(password)){
+    if(!can_submit){
+      setCan_submit(true)
+    }
+  }
+  else{
+    if (can_submit){
+      setCan_submit(false)
+    }
+  }
+
+  console.log(can_submit)
+
   return (
     <>
      <p>Login Page</p>
@@ -59,7 +77,9 @@ function App() {
       <br></br>
       <input value={password} onChange={e => {setPassword(e.target.value)}} type='password'/>
       <br></br>
-      <input type='submit'/>
+      {
+        can_submit && <input type='submit'/>
+      }
      </form>
     </>
   )
