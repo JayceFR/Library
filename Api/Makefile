@@ -1,5 +1,5 @@
 build: 
-	@go build -o bin/library
+	@go build -o bin/library ./src
 
 run: build
 	@./bin/library
