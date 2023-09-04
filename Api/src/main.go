@@ -1,9 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	api "github.com/JayceFR/library/src/api"
+)
 
 func main() {
 	fmt.Println("Sup Buddy")
-	server := NewApiServer(":3000")
+	server := api.NewApiServer(":3000")
 	server.Run()
 }
