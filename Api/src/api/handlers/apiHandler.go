@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"math/rand"
@@ -15,7 +16,7 @@ type ApiHandler struct {
 }
 
 type Account struct {
-	ID        int    `json:"id"`
+	ID        int    `gorm:"primarykey" json:"id"`
 	FirstName string `json:"first_name"`
 	Email     string `json:"email"`
 	Password  string `json:"password"`
@@ -23,6 +24,7 @@ type Account struct {
 
 func New() *ApiHandler {
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db.AutoMigrate(&Account{})
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -47,27 +49,15 @@ func (s *ApiHandler) WriteJson(w http.ResponseWriter, status int, v any) error {
 }
 
 func (s *ApiHandler) HandleAccount(w http.ResponseWriter, r *http.Request) error {
+	ctx := context.Background()
 	if r.Method == "GET" {
-		return s.handleGetAccount(w, r)
+		return s.handleGetAccount(ctx, w, r)
 	}
 	if r.Method == "POST" {
-		return s.handleCreateAccount(w, r)
+		return s.handleCreateAccount(ctx, w, r)
 	}
 	if r.Method == "DELETE" {
-		return s.handleDeleteAccount(w, r)
+		return s.handleDeleteAccount(ctx, w, r)
 	}
 	return fmt.Errorf("Method not allowed %s", r.Method)
-}
-
-func (s *ApiHandler) handleGetAccount(w http.ResponseWriter, r *http.Request) error {
-	account := s.NewAccount("Jayce", "jeffyjany31@gmail.com", "jefjan")
-	return s.WriteJson(w, http.StatusOK, account)
-}
-
-func (s *ApiHandler) handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
-	return nil
-}
-
-func (s *ApiHandler) handleDeleteAccount(w http.ResponseWriter, r *http.Request) error {
-	return nil
 }
