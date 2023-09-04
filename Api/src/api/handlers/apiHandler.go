@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"math/rand"
 	"net/http"
 
 	"gorm.io/driver/sqlite"
@@ -33,9 +32,9 @@ func New() *ApiHandler {
 	}
 }
 
-func (s *ApiHandler) NewAccount(firstName, email, passowrd string) *Account {
+func (s *ApiHandler) NewAccount(id int, firstName, email, passowrd string) *Account {
 	return &Account{
-		ID:        rand.Intn(1000),
+		ID:        id,
 		FirstName: firstName,
 		Email:     email,
 		Password:  passowrd,
