@@ -42,8 +42,23 @@ func NewApiServer(listenAddr string) *APIServer {
 	}
 }
 
+func enableCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*") // Allow requests from any origin
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Allow-Credentials", "true") // Allow credentials (cookies, headers, etc.) to be sent
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 func (s *APIServer) Run() {
 	router := mux.NewRouter()
+	router.Use(enableCORS)
 	ApiHandler := handlers.New()
 	log.Println("Api running on port :", s.listenAddr)
 	router.HandleFunc("/account", makeHttpHandleFunc(ApiHandler.HandleAccount))
