@@ -5,13 +5,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func (s *ApiHandler) handleGetAccount(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	// account := s.NewAccount("Jayce", "jeffyjany31@gmail.com", "jefjan")
-	// s.db.Create(account)
-	// var get_account Account
-	// s.db.First(&get_account, "first_name = ?", "Jayce")
+	id := mux.Vars(r)["id"]
+	var account *Account
+	s.db.First(&account, "id = ?", id)
+	return s.WriteJson(w, http.StatusOK, account)
+}
+
+func (s *ApiHandler) handleGetAllAccount(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 	response, err := s.GetAllAcounts(ctx, s.db)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -31,15 +36,13 @@ func (s *ApiHandler) handleCreateAccount(ctx context.Context, w http.ResponseWri
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	response, err := s.GetAllAcounts(ctx, s.db)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	account := s.NewAccount(len(response), createAccount.FirstName, createAccount.Email, createAccount.Password)
+	account := s.NewAccount(createAccount.FirstName, createAccount.Email, createAccount.Password)
 	s.db.Create(account)
 	return s.WriteJson(w, http.StatusOK, createAccount)
 }
 
 func (s *ApiHandler) handleDeleteAccount(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	return nil
+	id := mux.Vars(r)["id"]
+	s.db.Delete(&Account{}, "id = ?", id)
+	return s.WriteJson(w, http.StatusOK, "successfully deleted")
 }

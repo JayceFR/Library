@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/google/uuid"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -15,10 +16,10 @@ type ApiHandler struct {
 }
 
 type Account struct {
-	ID        int    `gorm:"primarykey" json:"id"`
-	FirstName string `json:"first_name"`
-	Email     string `json:"email"`
-	Password  string `json:"password"`
+	ID        uuid.UUID `gorm:"primarykey" json:"id"`
+	FirstName string    `json:"first_name"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
 }
 
 func New() *ApiHandler {
@@ -32,7 +33,8 @@ func New() *ApiHandler {
 	}
 }
 
-func (s *ApiHandler) NewAccount(id int, firstName, email, passowrd string) *Account {
+func (s *ApiHandler) NewAccount(firstName, email, passowrd string) *Account {
+	id := uuid.New()
 	return &Account{
 		ID:        id,
 		FirstName: firstName,
@@ -50,13 +52,21 @@ func (s *ApiHandler) WriteJson(w http.ResponseWriter, status int, v any) error {
 func (s *ApiHandler) HandleAccount(w http.ResponseWriter, r *http.Request) error {
 	ctx := context.Background()
 	if r.Method == "GET" {
-		return s.handleGetAccount(ctx, w, r)
+		return s.handleGetAllAccount(ctx, w, r)
 	}
 	if r.Method == "POST" {
 		return s.handleCreateAccount(ctx, w, r)
 	}
+	return fmt.Errorf("method not allowed %s", r.Method)
+}
+
+func (s *ApiHandler) HandleSpecificAccount(w http.ResponseWriter, r *http.Request) error {
+	ctx := context.Background()
+	if r.Method == "GET" {
+		return s.handleGetAccount(ctx, w, r)
+	}
 	if r.Method == "DELETE" {
 		return s.handleDeleteAccount(ctx, w, r)
 	}
-	return fmt.Errorf("Method not allowed %s", r.Method)
+	return fmt.Errorf("method not allowed %s", r.Method)
 }
