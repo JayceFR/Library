@@ -10,7 +10,7 @@ import (
 )
 
 func (s *ApiHandler) handleGetAccount(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	id := mux.Vars(r)["id"]
+	id := mux.Vars(r)["id"] //To extract something in the endpoint like '/account/{id}'
 	var account *Account
 	s.db.First(&account, "id = ?", id)
 	return s.WriteJson(w, http.StatusOK, account)
@@ -34,7 +34,7 @@ const null_uuid = "00000000-0000-0000-0000-000000000000"
 
 func (s *ApiHandler) handleCreateAccount(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 	createAccount := CreateAccount{}
-	err := json.NewDecoder(r.Body).Decode(&createAccount)
+	err := json.NewDecoder(r.Body).Decode(&createAccount) //To extract the raw json body.
 	if err != nil {
 		fmt.Println(err.Error())
 	}

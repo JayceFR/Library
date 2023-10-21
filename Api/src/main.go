@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Sup Buddy")
+	fmt.Println("API RUNNING")
 	server := api.NewApiServer(":3000")
 	server.Run()
 }

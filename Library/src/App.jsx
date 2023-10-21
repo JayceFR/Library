@@ -31,7 +31,6 @@ function App() {
     }
     const result = await fetch(base_url, {
       method: 'POST',
-      mode:'no-cors',
       headers:{
         'Content-Type' : 'application/json',
         'Accept':'application/json'
