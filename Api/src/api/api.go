@@ -63,5 +63,6 @@ func (s *APIServer) Run() {
 	log.Println("Api running on port :", s.listenAddr)
 	router.HandleFunc("/account", makeHttpHandleFunc(ApiHandler.HandleAccount))
 	router.HandleFunc("/account/{id}", makeHttpHandleFunc(ApiHandler.HandleSpecificAccount))
+	router.HandleFunc("/login", makeHttpHandleFunc(ApiHandler.HandleLogin))
 	http.ListenAndServe(s.listenAddr, router)
 }
