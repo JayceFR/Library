@@ -1,7 +1,7 @@
 function Home(){
     return(
         <>
-            Home
+            <h1>Community Library</h1>
         </>
     )
 }

@@ -6,6 +6,7 @@ import { Route, Routes } from 'react-router-dom'
 import Home from './pages/home.jsx'
 import Nav from './components/nav.jsx'
 import Login from './pages/login.jsx'
+import "./style.css"
 
 function App(){
   return(
