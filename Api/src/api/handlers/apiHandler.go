@@ -73,7 +73,7 @@ func (s *ApiHandler) HandleSpecificAccount(w http.ResponseWriter, r *http.Reques
 
 func (s *ApiHandler) HandleLogin(w http.ResponseWriter, r *http.Request) error {
 	ctx := context.Background()
-	if r.Method == "GET" {
+	if r.Method == "POST" {
 		return s.HandleLoginAccount(ctx, w, r)
 	}
 	return fmt.Errorf("method not allowed %s", r.Method)
