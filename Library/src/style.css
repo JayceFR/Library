@@ -1,6 +1,12 @@
+:root{
+    --bgcolor: #1B1B1B;
+    --txtcolor: #E2E2E2;
+}
+
 body {
-    background-color: #1B1B1B;
-    color: #E2E2E2;
+    background-color: var(--bgcolor) ;
+    color: var(--txtcolor);
+    transition: background-color 0.8s;
 }
 
 .navbar{
@@ -19,7 +25,7 @@ body {
 
 .navbar li a{
     display: block;
-    color: #E2E2E2;
+    color: var(--txtcolor);
     font-style: oblique;
     text-align: center;
     padding: 14px 16px;
@@ -27,6 +33,24 @@ body {
     text-decoration: none; 
     transition: color 1s, font-size 0.5s;
     transition-timing-function: ease-in-out;
+}
+
+#light_dark_mode{
+    display: block;
+    float: right;
+    text-align: center;
+    padding-left: 10px;
+    font-size: 15px;
+    width: 30px;
+    height: 35px;
+}
+
+#light_dark_txt{
+    display: block;
+    float: right;
+    font-size: small;
+    cursor: pointer;
+    transition: color 1.2s;
 }
 
 .navbar li a:hover:not(.active){
