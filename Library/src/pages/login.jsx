@@ -15,7 +15,7 @@ function Login() {
 
     const navigate = useNavigate();
 
-    const {login, user} = AuthData();
+    const {login, user, mode} = AuthData();
 
     function submit(e) {
         e.preventDefault();
@@ -35,7 +35,6 @@ function Login() {
         }catch (error){
             console.log(error);
         }
-        //Navigate to dashboard page if successful.
     }
     if (email_regex.test(email) && password_regex.test(password)) {
         if (!can_submit) {
@@ -55,11 +54,13 @@ function Login() {
                     <br></br>
                     <div className="inputbox">
                         <Input password={false} value={email} change_method={setEmail} name = {"Email"} />
-                        <img className = "lricon" src="../../Assets/user.png"/>
+                        {mode=="dark"? <img className = "lricon" src="../../Assets/mail_black.png"/>: <img className = "lricon" src="../../Assets/mail_white.png"/> }
+                        
                     </div>
                     <div className="inputbox">
                         <Input password={true} value={password} change_method={setPassword} name = {"Password"} />
-                        <img className="lricon" src="../../Assets/lock.png"/>
+                        {mode=="dark"?<img className="lricon" src="../../Assets/lock_black.png"/>:<img className="lricon" src="../../Assets/lock_white.png"/>}
+                        
                     </div>
                     {
                         can_submit && <input className="btn" type='submit' />

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Input from '../components/input'
 import { email_regex_value, password_regex_value } from '../constants/regexConstants'
 import { useNavigate } from 'react-router-dom'
+import { AuthData } from '../auth/authentication'
 //import './App.css'
 
 
@@ -13,6 +14,8 @@ function Register() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [can_submit, setCan_submit] = useState(false)
+
+  const {mode} = AuthData();
 
   const navigate = useNavigate();
 
@@ -78,12 +81,15 @@ function Register() {
           <br></br>
           <div className='inputbox'>
             <Input name={"Name"} password={false} value={name} change_method={setName} />
+            {mode=="dark"?<img className="lricon" src="../../Assets/user_black.png"/>:<img className="lricon" src="../../Assets/user_white.png"/>}
           </div>
           <div className='inputbox'>
             <Input name={"Email"} password={false} value={email} change_method={setEmail} />
+            {mode=="dark"? <img className = "lricon" src="../../Assets/mail_black.png"/>: <img className = "lricon" src="../../Assets/mail_white.png"/> }
           </div>
           <div className='inputbox'>
             <Input name={"Password"} password={true} value={password} change_method={setPassword} />
+            {mode=="dark"?<img className="lricon" src="../../Assets/lock_black.png"/>:<img className="lricon" src="../../Assets/lock_white.png"/>}
           </div>
           <br></br>
           {
