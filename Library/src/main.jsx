@@ -1,30 +1,38 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import Register from './pages/register.jsx'
 import {BrowserRouter} from "react-router-dom"
 import { Route, Routes } from 'react-router-dom'
-import Home from './pages/home.jsx'
-import Nav from './components/nav.jsx'
-import Login from './pages/login.jsx'
 import "./style.css"
+import Authenticaiton, { AuthData } from './auth/authentication.jsx'
+import { nav } from './constants/navConstants.jsx'
 
 function App(){
-  return(
-    <>
-    <Nav/>
+  const {user} = AuthData();
+  return (
     <Routes>
-      <Route path = "/" element={<Home/>}/>
-      <Route path = "/register" element={<Register/>}/>
-      <Route path = "/login" element={<Login/>}/>
+      {
+        nav.map((curr_route, index) => {
+          if (curr_route.isPrivate && user.is_logged_in){
+            return <Route key={index} path={curr_route.path} element={curr_route.element}/>
+          }
+          else if (!curr_route.isPrivate){
+            return <Route key={index} path={curr_route.path} element={curr_route.element}/>
+          }
+          else{
+            return false
+          }
+        })
+      }
     </Routes>
-    </>
   )
 }
+
+export default App
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <Authenticaiton />
     </BrowserRouter>
   </React.StrictMode>,
 )

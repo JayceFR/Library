@@ -3,21 +3,28 @@
 import { useState, useEffect } from 'react'
 import Input from '../components/input'
 import { email_regex_value, password_regex_value } from '../constants/regexConstants'
+import { useNavigate } from 'react-router-dom'
 //import './App.css'
 
 
 //Sign Up Page
 function Register() {
   const [name, setName] = useState("")
-  const [email , setEmail] = useState("")
-  const [password , setPassword] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [can_submit, setCan_submit] = useState(false)
 
-  function submit(e){
+  const navigate = useNavigate();
+
+  function submit(e) {
     e.preventDefault()
     console.log(email)
     console.log(password)
     sign_up()
+  }
+
+  function navigate_to_login(){
+    navigate("/login");
   }
 
   const email_regex = new RegExp(email_regex_value);
@@ -27,22 +34,22 @@ function Register() {
 
     const base_url = "http://localhost:3000/account"
     const user_data = {
-      "first_name":name,
-      "email":email,
-      "password":password
+      "first_name": name,
+      "email": email,
+      "password": password
     }
     const result = await fetch(base_url, {
       method: 'POST',
-      headers:{
-        'Content-Type' : 'application/json',
-        'Accept':'application/json'
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
       body: JSON.stringify(user_data)
-    })    
+    })
 
     const result2 = await fetch(base_url, {
-      headers:{
-        'Accept':'application/json'
+      headers: {
+        'Accept': 'application/json'
       }
     })
     const json_result = await result2.json()
@@ -50,13 +57,13 @@ function Register() {
 
   }
 
-  if(email_regex.test(email) && password_regex.test(password)){
-    if(!can_submit){
+  if (email_regex.test(email) && password_regex.test(password)) {
+    if (!can_submit) {
       setCan_submit(true)
     }
   }
-  else{
-    if (can_submit){
+  else {
+    if (can_submit) {
       setCan_submit(false)
     }
   }
@@ -65,25 +72,29 @@ function Register() {
 
   return (
     <>
-     <p>Sign Up Page</p>
-     <br></br>
-     <form onSubmit={submit}>
-      <label>Name</label>
-      <br></br>
-      <Input password={false} value={name} change_method={setName}/>
-      <br></br>
-      <label>Email</label>
-      <br></br>
-      <Input password={false} value={email} change_method={setEmail}/>
-      <br></br>
-      <label>Password</label>
-      <br></br>
-      <Input password={true} value={password} change_method={setPassword}/>
-      <br></br>
-      {
-        can_submit && <input type='submit'/>
-      }
-     </form>
+      <div className='lrform'>
+        <form onSubmit={submit}>
+          <label>Register</label>
+          <br></br>
+          <div className='inputbox'>
+            <Input name={"Name"} password={false} value={name} change_method={setName} />
+          </div>
+          <div className='inputbox'>
+            <Input name={"Email"} password={false} value={email} change_method={setEmail} />
+          </div>
+          <div className='inputbox'>
+            <Input name={"Password"} password={true} value={password} change_method={setPassword} />
+          </div>
+          <br></br>
+          {
+            can_submit && <input className='btn' type='submit' />
+          }
+          <div className="register-link">
+            <p>Have an account? <a onClick={navigate_to_login}>Sign In</a></p>
+          </div>
+        </form>
+      </div>
+
     </>
   )
 }

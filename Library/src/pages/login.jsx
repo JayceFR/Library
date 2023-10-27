@@ -1,35 +1,41 @@
 import { useState } from "react";
 import Input from "../components/input";
 import { email_regex_value, password_regex_value } from "../constants/regexConstants";
+import { AuthData } from "../auth/authentication";
+import { useNavigate } from "react-router-dom";
+
 
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [can_submit, setCan_submit] = useState(false)
+
     const email_regex = new RegExp(email_regex_value);
     const password_regex = new RegExp(password_regex_value);
+
+    const navigate = useNavigate();
+
+    const {login, user} = AuthData();
+
     function submit(e) {
         e.preventDefault();
         console.log(email);
         console.log(password);
-        login();
+        doLogin();
     }
-    const login = async () => {
-        const url = "http://localhost:3000/login";
-        const user_data = {
-            "email": email,
-            "password": password
+
+    function nvaigate_to_register(){
+        navigate("/register");
+    }
+
+    const doLogin = async () => {
+        try{
+            await login(email, password);
+            navigate("/dashboard")
+        }catch (error){
+            console.log(error);
         }
-        const result = await fetch(url, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(user_data)
-        });
-        const json_result = await result.json();
-        console.log(json_result);
+        //Navigate to dashboard page if successful.
     }
     if (email_regex.test(email) && password_regex.test(password)) {
         if (!can_submit) {
@@ -43,23 +49,29 @@ function Login() {
     }
     return (
         <>
-            <p>Login Page</p>
-            <br></br>
-            <form onSubmit={submit}>
-                <label>Email</label>
-                <br></br>
-                <Input password={false} value={email} change_method={setEmail} />
-                <br></br>
-                <label>Password</label>
-                <br></br>
-                <Input password={true} value={password} change_method={setPassword} />
-                <br></br>
-                <br></br>
-                {
-                    can_submit && <input type='submit' />
-                }
-            </form>
+            <div className="lrform">
+                <form onSubmit={submit}>
+                    <label>Login</label>
+                    <br></br>
+                    <div className="inputbox">
+                        <Input password={false} value={email} change_method={setEmail} name = {"Email"} />
+                        <img className = "lricon" src="../../Assets/user.png"/>
+                    </div>
+                    <div className="inputbox">
+                        <Input password={true} value={password} change_method={setPassword} name = {"Password"} />
+                        <img className="lricon" src="../../Assets/lock.png"/>
+                    </div>
+                    {
+                        can_submit && <input className="btn" type='submit' />
+                    }
+                    <div className="register-link">
+                        <p>Don't have an account? <a onClick={nvaigate_to_register}>Register</a></p>
+                    </div>
+                </form>
+            </div>
+
         </>
     )
+    
 }
 export default Login;

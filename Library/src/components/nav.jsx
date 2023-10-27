@@ -1,40 +1,39 @@
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
+import { nav } from "../constants/navConstants";
+import { AuthData } from "../auth/authentication";
 function Nav(){
-    const [mode, setMode] = useState("dark");
-    function changeDark(){
-        var r = document.querySelector(':root');
-        if (mode == "dark"){
-            r.style.setProperty('--bgcolor', '#E2E2E2')
-            r.style.setProperty('--txtcolor', '#1B1B1B')
-            setMode("light");
-        }
-        else{
-            r.style.setProperty('--txtcolor', '#E2E2E2')
-            r.style.setProperty('--bgcolor', '#1B1B1B')
-            setMode("dark");
-        }
+
+    const {user, logout, mode, change_dark} = AuthData();
+    const MenuItem = ({curr_route}) => {
+        return(
+            <li><NavLink to = {curr_route.path}>{curr_route.name}</NavLink></li>
+        )
     }
     return(
         <>
             <nav>
                 <ul className="navbar">
-                    <li>
-                        <NavLink to="/register">Register</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/login">Login</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/">Home</NavLink>
-                    </li>
+                    {
+                        nav.map((curr_route, index) => {
+                            if (curr_route.isMenu && !curr_route.isPrivate){
+                                return(<MenuItem key={index} curr_route={curr_route}/>)
+                            }
+                            else if (curr_route.isMenu && user.is_logged_in){
+                                return(<MenuItem key={index} curr_route={curr_route}/>)
+                            }
+                            else{
+                                return false
+                            }
+                        })
+                    }
+                    { user.is_logged_in ? <li><NavLink to={'/'} onClick={logout}>Log Out</NavLink></li> : <li><NavLink to={'/login'}>Log In</NavLink></li>}
                 </ul>
             </nav>
             <br></br>
             {mode == "dark" && <img id="light_dark_mode" src = "../../Assets/light_on.png"/>}
             {mode == "light" && <img id="light_dark_mode" src = "../../Assets/light_off.png"/>}
-            {mode=="dark" && <a onClick={changeDark} id="light_dark_txt">Turn on the lights</a>}
-            {mode=="light" && <a onClick={changeDark} id="light_dark_txt">Turn off the lights</a>}
+            {mode=="dark" && <a onClick={change_dark} id="light_dark_txt">Turn on the lights</a>}
+            {mode=="light" && <a onClick={change_dark} id="light_dark_txt">Turn off the lights</a>}
         </>
     )
 }
