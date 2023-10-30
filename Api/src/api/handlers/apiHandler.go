@@ -19,7 +19,7 @@ type Account struct {
 	ID        uuid.UUID `gorm:"primarykey" json:"id"`
 	FirstName string    `json:"first_name"`
 	Email     string    `json:"email"`
-	Password  string    `json:"password"`
+	Password  []byte    `json:"password"`
 }
 
 func New() *ApiHandler {
@@ -33,7 +33,7 @@ func New() *ApiHandler {
 	}
 }
 
-func (s *ApiHandler) NewAccount(firstName, email, passowrd string) *Account {
+func (s *ApiHandler) NewAccount(firstName string, email string, passowrd []byte) *Account {
 	id := uuid.New()
 	return &Account{
 		ID:        id,

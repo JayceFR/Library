@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -38,11 +39,14 @@ func (s *ApiHandler) handleCreateAccount(ctx context.Context, w http.ResponseWri
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+	h := sha256.New()
+	h.Write([]byte(createAccount.Password))
+	bs := h.Sum(nil)
 	var check_account Account
 	s.db.First(&check_account, "email = ?", createAccount.Email)
 	if check_account.ID.String() == null_uuid {
 		fmt.Println("Email is not Found")
-		account := s.NewAccount(createAccount.FirstName, createAccount.Email, createAccount.Password)
+		account := s.NewAccount(createAccount.FirstName, createAccount.Email, bs)
 		s.db.Create(account)
 		return s.WriteJson(w, http.StatusOK, createAccount)
 	} else {
