@@ -22,9 +22,16 @@ type Account struct {
 	Password  []byte    `json:"password"`
 }
 
+type Community struct {
+	ID            uuid.UUID `gorm:"primarykey" json:"id"`
+	CommunityName string    `json:"community_name"`
+	NoOfUsers     int       `json:"number_of_users"`
+}
+
 func New() *ApiHandler {
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	db.AutoMigrate(&Account{})
+	db.AutoMigrate(&Community{})
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -40,6 +47,14 @@ func (s *ApiHandler) NewAccount(firstName string, email string, passowrd []byte)
 		FirstName: firstName,
 		Email:     email,
 		Password:  passowrd,
+	}
+}
+
+func (s *ApiHandler) NewCommunity(communityName string) *Community {
+	id := uuid.New()
+	return &Community{
+		ID:            id,
+		CommunityName: communityName,
 	}
 }
 
@@ -75,6 +90,14 @@ func (s *ApiHandler) HandleLogin(w http.ResponseWriter, r *http.Request) error {
 	ctx := context.Background()
 	if r.Method == "POST" {
 		return s.HandleLoginAccount(ctx, w, r)
+	}
+	return fmt.Errorf("method not allowed %s", r.Method)
+}
+
+func (s *ApiHandler) HandleSpecificCommunity(w http.ResponseWriter, r *http.Request) error {
+	ctx := context.Background()
+	if r.Method == "POST" {
+		return s.handleCreateCommunity(ctx, w, r)
 	}
 	return fmt.Errorf("method not allowed %s", r.Method)
 }
